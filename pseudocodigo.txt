@@ -1,9 +1,8 @@
-// Ejemplo for en python corregido para que traduzca bien
-principal () {
+principal (){
 	entero _x, _y=3, _tam=5 ;
-	para ( _x en rango (_tam) ) entonces // agregar palabras en, rango a la tabla lexica
+	para ( _x en rango(_tam) ) entonces // agregar palabras en, rango a la tabla léxica
 		si ( _x < _y ) entonces
-		   break ;
+			break
 		fin
 	fin
 	}

@@ -1,3 +1,9 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# Integrantes:
+# Whalen Stiven Caicedo
+# Juan David Beca Pillimue
+# ---------------------------------------------------------------------------------------------------------------------
+
 # 'w' ----> la 'w' crea o sobrescribe el archivo con la actulizacion que le hayamos hecho
 # 'a' ----> la 'a' agrega una nueva linea
 # 'x' ----> la 'x' crea un archivo desde cero
@@ -22,7 +28,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # Funciones
 # ---------------------------------------------------------------------------------------------------------------------
-
+import os
 # funcion valida si es comentario
 def esComentario(cadena,lineasTbLex):
     # compara si la palabra enviada es igual a la primera posicion de la lista del fichero tablaLexica
@@ -42,6 +48,10 @@ def esPalReservada(cadena,lineasTbLex):
         # compara si la palabra enviada es una palabra reservada en el fichero tablaLexica
         if cadena == auxiliar:
             return True
+        else:
+            auxiliar = lineasTbLex[i][1]
+            if cadena == auxiliar:
+                return True
         i+=1
     return False
 
@@ -54,6 +64,18 @@ def esSimbolo(cadena,lineasTbLex):
         auxiliar = lineasTbLex[i][0]
         # compara si la palabra enviada es un simbolo en el fichero tablaLexica
         if cadena == auxiliar:
+            return True
+        i+=1
+    return False
+
+def esCadena(cadena,lineasTbLex):
+    # i=0 por que apartir de ahi empiezan los simbolos reservados en el fichero tablalexica
+    i=0
+    # Hasta i<33 por que ese es el numero final de simbolos en el archivo TablaLexica
+    while i<=59:
+        auxiliar = lineasTbLex[i][0]
+        # compara si la palabra enviada es un simbolo en el fichero tablaLexica
+        if cadena != auxiliar:
             return True
         i+=1
     return False
@@ -71,17 +93,30 @@ def equivalencia(cadena,lineasTbLex):
             return lineasTbLex[i][1]
         i+=1
     return cadena
+def escribirLinea(variableFichero,listaAux,lineasTbLex):
+    with open(codigoPython, 'r') as f:
+        # LineasPseudo contiene una lista de todas las lineas del pseudocodigo
+        lineasCodPhyton = [linea.split() for linea in f]
+        f=open(variableFichero,'a')
+        #listaAuxiliarString guarda la frase guardada en la lista auxiliar
+        listaAuxStr = " ".join(listaAux)
+        #Escribe la frase guardada en listaAuxiliarString
+        f.write(''+listaAuxStr+'\n')
+        # Cierra el fichero
+        f.close()
 
 # Adiciona linea en el fichero con el codigo en python
-def adicionarLinea(variableFichero,listaAux):
-    #abre el fichero
-    f=open(variableFichero,'a')
-    #listaAuxiliarString guarda la frase guardada en la lista auxiliar
-    listaAuxStr = " ".join(listaAux)
-    #Escribe la frase guardada en listaAuxiliarString
-    f.write(listaAuxStr+'\n')
-    # Cierra el fichero
-    f.close()
+def adicionarLinea(variableFichero,listaAux,lineasTbLex):
+    with open(codigoPython, 'r') as f:
+        # LineasPseudo contiene una lista de todas las lineas del pseudocodigo
+        lineasCodPhyton = [linea.split() for linea in f]
+        f=open(variableFichero,'a')
+        #listaAuxiliarString guarda la frase guardada en la lista auxiliar
+        listaAuxStr = " ".join(listaAux)
+        #Escribe la frase guardada en listaAuxiliarString
+        f.write(''+listaAuxStr+'\n')
+        # Cierra el fichero
+        f.close()
 
 # Escribe comentario empezando el fichero en phyton donde usualmente es su descripcion
 def escribirComentarioInicio(variableFichero,cadenaPseudo,lineaPseudo):
@@ -107,7 +142,8 @@ with open(tablaLexica, 'r') as f:
     # LineasTbLex contiene una lista de todas las lineas de la tabla lexica
     lineasTbLex = [linea.split() for linea in f]
 
-#recorremos la lista de la tabla lexica e imprimimos cada uno de sus items guardado en lineaTbLex
+'''
+recorremos la lista de la tabla lexica e imprimimos cada uno de sus items guardado en lineaTbLex
 for lineaTbLex in lineasTbLex:
     print(lineaTbLex[0])
     print('-----------------')
@@ -115,52 +151,58 @@ for lineaTbLex in lineasTbLex:
 for lineaPseudo in lineasPseudo:
     print(lineaPseudo[0])
     print('-----------------')
+'''
 
 #recorremos la lista del pseudocdigo e imprimimos cada uno de sus items guardado en lineaPseudo
 for lineaPseudo in lineasPseudo:
     # Si la primera palabra de la linea del fichero del psuedocodigo es un comentario
     if esComentario(lineaPseudo[0],lineasTbLex):
-        print('TODO soy un comentario')
-        print(lineaPseudo[0])
         # Escribira el comentario en la primer linea del Fichero en python
         escribirComentarioInicio(codigoPython,lineaPseudo[0],lineaPseudo)
+
     # si es una palabra reservada
     elif esPalReservada(lineaPseudo[0],lineasTbLex):
-        print('TODO soy una palabra reservada')
         i=0
         # Creamos una lista auxiliar vacia para ir guardando las palabras a escribir despues de la palabra reservada
         listaAux= []
-        espacio = ' '
         # Mientras el iterador sea menor a longitud de la lista con las palabras de la linea del Pseudocodigo
         while i<=len(lineaPseudo):
-            print(lineaPseudo[i-1])
-            if lineaPseudo[i-1] == 'break':
-                print('soy un break' )
-                listaAux.append(espacio)
             # lista auxiliar agrgara a su lista el equivalente a la palabra en la linea del
             # pseudocodigo segun la tabla lexica
             listaAux.append(equivalencia(lineaPseudo[i-1],lineasTbLex))
             i+=1
         listaAux.pop(0)
-        print(listaAux)
+        if os.stat(codigoPython).st_size == 0:
+            escribirLinea(codigoPython,listaAux,lineasTbLex)
         # Adicionamos la linea en el fichero con el codigo en phyton
-        adicionarLinea(codigoPython,listaAux)
+        adicionarLinea(codigoPython,listaAux,lineasTbLex)
 
     elif esSimbolo(lineaPseudo[0],lineasTbLex):
-        print('TODO soy un simbolo')
-        print(lineaPseudo[0])
         i=1
         # Creamos una lista auxiliar vacia para ir guardando las palabras a escribir despues de la palabra reservada
         listaAux= []
         while i<=len(lineaPseudo):
-            print(lineaPseudo[i-1])
             # lista auxiliar agrgara a su lista el equivalente a la palabra en la linea del
             # pseudocodigo segun la tabla lexica
             listaAux.append(equivalencia(lineaPseudo[i-1],lineasTbLex))
             i+=1
-        print(listaAux)
         # Adicionamos la linea en el fichero con el codigo en phyton
-        adicionarLinea(codigoPython,listaAux)
+        adicionarLinea(codigoPython,listaAux,lineasTbLex)
+
+    elif esCadena(lineaPseudo[0],lineasTbLex):
+        '''
+        i=1
+        # Creamos una lista auxiliar vacia para ir guardando las palabras a escribir despues de la palabra reservada
+        listaAux= []
+        print(lineaPseudo)
+        while i<=len(lineaPseudo):
+            # lista auxiliar agrgara a su lista el equivalente a la palabra en la linea del
+            # pseudocodigo segun la tabla lexica
+            listaAux.append(equivalencia(lineaPseudo[i-1],lineasTbLex))
+            i+=1
+        '''
+        # Adicionamos la linea en el fichero con el codigo en phyton
+        adicionarLinea(codigoPython,lineaPseudo,lineasTbLex)
 
 
     

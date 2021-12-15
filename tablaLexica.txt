@@ -41,7 +41,7 @@ finmientras #
 mientras while
 o or 
 y and 
-hacer
+hacer #
 para for 
 finPara #
 azar random.randint
