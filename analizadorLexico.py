@@ -105,16 +105,25 @@ def escribirLinea(variableFichero,listaAux,lineasTbLex):
         # Cierra el fichero
         f.close()
 
+def tabular (listaStrings,lineasTbLex,listaTab):
+    i = 34
+    while i<49:
+        if listaStrings[0] == lineasTbLex[i][1] :
+            listaTab.append('\t')
+        i+=1
+    return listaTab
+
 # Adiciona linea en el fichero con el codigo en python
-def adicionarLinea(variableFichero,listaAux,lineasTbLex):
+def adicionarLinea(variableFichero,listaAux,lineasTbLex,listaTab):
     with open(codigoPython, 'r') as f:
         # LineasPseudo contiene una lista de todas las lineas del pseudocodigo
         lineasCodPhyton = [linea.split() for linea in f]
         f=open(variableFichero,'a')
         #listaAuxiliarString guarda la frase guardada en la lista auxiliar
         listaAuxStr = " ".join(listaAux)
+        listaTabAuxStr = " ".join(listaTab)
         #Escribe la frase guardada en listaAuxiliarString
-        f.write(''+listaAuxStr+'\n')
+        f.write(listaTabAuxStr + listaAuxStr + '\n')
         # Cierra el fichero
         f.close()
 
@@ -165,6 +174,7 @@ for lineaPseudo in lineasPseudo:
         i=0
         # Creamos una lista auxiliar vacia para ir guardando las palabras a escribir despues de la palabra reservada
         listaAux= []
+        listaTab = ['\t']
         # Mientras el iterador sea menor a longitud de la lista con las palabras de la linea del Pseudocodigo
         while i<=len(lineaPseudo):
             # lista auxiliar agrgara a su lista el equivalente a la palabra en la linea del
@@ -174,20 +184,28 @@ for lineaPseudo in lineasPseudo:
         listaAux.pop(0)
         if os.stat(codigoPython).st_size == 0:
             escribirLinea(codigoPython,listaAux,lineasTbLex)
-        # Adicionamos la linea en el fichero con el codigo en phyton
-        adicionarLinea(codigoPython,listaAux,lineasTbLex)
+        else:
+            # Adicionamos la linea en el fichero con el codigo en phyton
+            listaTab = tabular (listaAux,lineasTbLex,listaTab)
+            adicionarLinea(codigoPython,listaAux,lineasTbLex,listaTab)
 
     elif esSimbolo(lineaPseudo[0],lineasTbLex):
         i=1
         # Creamos una lista auxiliar vacia para ir guardando las palabras a escribir despues de la palabra reservada
         listaAux= []
+        listaTab = ['\t']
         while i<=len(lineaPseudo):
             # lista auxiliar agrgara a su lista el equivalente a la palabra en la linea del
             # pseudocodigo segun la tabla lexica
             listaAux.append(equivalencia(lineaPseudo[i-1],lineasTbLex))
             i+=1
         # Adicionamos la linea en el fichero con el codigo en phyton
-        adicionarLinea(codigoPython,listaAux,lineasTbLex)
+        listaTab = tabular (listaAux,lineasTbLex,listaTab)
+        for x in range (len(listaAux)):
+            if listaAux[x] == '#':
+
+                listaAux[x] ==' '
+        adicionarLinea(codigoPython,listaAux,lineasTbLex,listaTab)
 
     elif esCadena(lineaPseudo[0],lineasTbLex):
         '''
@@ -202,7 +220,7 @@ for lineaPseudo in lineasPseudo:
             i+=1
         '''
         # Adicionamos la linea en el fichero con el codigo en phyton
-        adicionarLinea(codigoPython,lineaPseudo,lineasTbLex)
+        adicionarLinea(codigoPython,lineaPseudo,lineasTbLex,listaTab)
 
 
     

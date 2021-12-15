@@ -11,8 +11,8 @@
 $ $
 # #
 | |
-{ {
-} }
+{ #
+} #
 ( (
 ) )
 [ [
@@ -28,7 +28,7 @@ t t
 ~ ~
 @ @
 , ,
-; ;
+; #
 . .
 : :
 <- =
@@ -39,13 +39,14 @@ escribir print
 leer imput 
 finmientras #
 mientras while
-o or 
-y and 
+break break
 hacer #
 para for 
 finPara #
 azar random.randint
 entonces :
+o or
+y and
 sino else
 finsi #
 finproceso #
@@ -57,4 +58,3 @@ entero int
 flotante float
 booleano bool
 String str
-break break
